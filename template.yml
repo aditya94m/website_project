@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lamda local demo
+  
+Resources:
+    ApiGatewayFunction:
+        Type: AWS::Serverless::Function 
+        Properties:
+            CodeUri: lambdas/ # format is projectPath/
+            Handler: get-dynamo-lambda.handler # format is filename.functionName
+            Runtime: nodejs14.x
+            Events:
+                the-rest-api:
+                    Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                    Properties:
+                         Path: /hello
+                         Method: get

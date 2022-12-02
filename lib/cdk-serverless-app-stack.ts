@@ -1,19 +1,51 @@
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
-import * as sns from 'aws-cdk-lib/aws-sns';
-import * as subs from 'aws-cdk-lib/aws-sns-subscriptions';
-import * as sqs from 'aws-cdk-lib/aws-sqs';
 import { Construct } from 'constructs';
+import * as cdk from 'aws-cdk-lib';
+import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
+import * as apigw from "aws-cdk-lib/aws-apigateway";
 
 export class CdkServerlessAppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const queue = new sqs.Queue(this, 'CdkServerlessAppQueue', {
-      visibilityTimeout: Duration.seconds(300)
+    const table = new dynamodb.Table(this, "DTable", {
+      partitionKey: { name: "first_name", type:dynamodb.AttributeType.STRING }, 
     });
 
-    const topic = new sns.Topic(this, 'CdkServerlessAppTopic');
+    const getDynamoLambda = new lambda.Function(this, "GetDynamoLambdaHandler", {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code: lambda.Code.fromAsset("lambdas"),
+      handler: "get-dynamo-lambda.handler",
+      timeout: cdk.Duration.seconds(30),
+      environment: {
+        DYNAMO_TABLE_NAME: table.tableName,
+      },
+    });
 
-    topic.addSubscription(new subs.SqsSubscription(queue));
+    const postDynamoLambda = new lambda.Function(this, "PostDynamoLambdaHandler", {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code: lambda.Code.fromAsset("lambdas"),
+      handler: "post-dynamo-lambda.handler",
+      timeout: cdk.Duration.seconds(30),
+      environment: {
+        DYNAMO_TABLE_NAME: table.tableName,
+      },
+    });
+
+    table.grantReadData(getDynamoLambda);
+    table.grantWriteData(postDynamoLambda);
+
+    const api = new apigw.RestApi(this, "the-rest-api");
+    api.root
+      .resourceForPath("hello")
+      .addMethod("GET", new apigw.LambdaIntegration(getDynamoLambda));
+    api.root
+      .resourceForPath("hello")
+      .addMethod("POST", new apigw.LambdaIntegration(postDynamoLambda));
+
+      new cdk.CfnOutput(this, "REST API URL", {
+        value: api.url ?? "Something went wrong with the deploy",
+      });
   }
 }
