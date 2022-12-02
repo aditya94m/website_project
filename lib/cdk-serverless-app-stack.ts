@@ -9,13 +9,13 @@ export class CdkServerlessAppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const table = new dynamodb.Table(this, "DTable", {
+    const table = new dynamodb.Table(this, "Users", {
       partitionKey: { name: "first_name", type:dynamodb.AttributeType.STRING }, 
     });
 
-    const getDynamoLambda = new lambda.Function(this, "GetDynamoLambdaHandler", {
+    const getDynamoLambda = new lambda.Function(this, "GetDynamoLambda", {
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset("lambdas"),
+      code: lambda.Code.fromAsset("src"),
       handler: "get-dynamo-lambda.handler",
       timeout: cdk.Duration.seconds(30),
       environment: {
@@ -23,9 +23,9 @@ export class CdkServerlessAppStack extends Stack {
       },
     });
 
-    const postDynamoLambda = new lambda.Function(this, "PostDynamoLambdaHandler", {
+    const postDynamoLambda = new lambda.Function(this, "PostDynamoLambda", {
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset("lambdas"),
+      code: lambda.Code.fromAsset("src"),
       handler: "post-dynamo-lambda.handler",
       timeout: cdk.Duration.seconds(30),
       environment: {
@@ -38,10 +38,10 @@ export class CdkServerlessAppStack extends Stack {
 
     const api = new apigw.RestApi(this, "the-rest-api");
     api.root
-      .resourceForPath("hello")
+      .resourceForPath("users")
       .addMethod("GET", new apigw.LambdaIntegration(getDynamoLambda));
     api.root
-      .resourceForPath("hello")
+      .resourceForPath("users")
       .addMethod("POST", new apigw.LambdaIntegration(postDynamoLambda));
 
       new cdk.CfnOutput(this, "REST API URL", {
