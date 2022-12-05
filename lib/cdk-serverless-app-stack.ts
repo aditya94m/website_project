@@ -10,7 +10,7 @@ export class CdkServerlessAppStack extends Stack {
     super(scope, id, props);
 
     const table = new dynamodb.Table(this, "Users", {
-      partitionKey: { name: "first_name", type:dynamodb.AttributeType.STRING }, 
+      partitionKey: { name: "user_id", type:dynamodb.AttributeType.NUMBER }, 
     });
 
     const getDynamoLambda = new lambda.Function(this, "GetDynamoLambda", {
