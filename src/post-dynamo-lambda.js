@@ -1,6 +1,6 @@
-exports.handler = async function (event) {
-    const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-    const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+export const handler = async (event) => {
     const dynamoClient = new DynamoDBClient({region: 'us-east-1'});
     const dynamoDocumentClient = DynamoDBDocumentClient.from(dynamoClient);
     const dynamoDBName = process.env.DYNAMO_TABLE_NAME;
