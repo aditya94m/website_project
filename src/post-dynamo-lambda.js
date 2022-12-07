@@ -21,12 +21,12 @@ export const handler = async (event) => {
     if (!item) return error_response;
     let [u_id, f_name, l_name, u_age] = [item['user_id'], item['first_name'],
         item['last_name'], item['age']];
-    if (!u_id || !f_name || !l_name || !u_age ||
-        !(typeof f_name == 'string') || !(typeof l_name == 'string')) {
+    if (!u_id || !f_name || !l_name || !u_age || !(typeof f_name == 'string') 
+        || !(typeof l_name == 'string')) {
         return error_response;
     }
-    [u_id, f_name, l_name, u_age] = [Number(u_id), f_name.trim(), 
-    l_name.trim(), Number(u_age)];
+    [u_id, f_name, l_name, u_age] = [Number(u_id), f_name.trim(), l_name.trim(), 
+        Number(u_age)];
     if (Number.isNaN(u_id) || f_name.length == 0 || (/[^a-zA-Z']/.test(f_name))
         || l_name.length == 0 || (/[^a-zA-Z']/.test(l_name)) 
         || Number.isNaN(u_age)) {
