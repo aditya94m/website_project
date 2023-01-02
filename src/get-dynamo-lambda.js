@@ -33,6 +33,7 @@ export const handler = async (event) => {
       }
     };
 } else {
+    console.error(response);
     return error_response;
   }
 };

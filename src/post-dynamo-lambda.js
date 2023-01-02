@@ -11,7 +11,7 @@ export const handler = async (event) => {
         "headers": {
           'Content-Type': 'application/json'
         }
-      };
+    };
     let item;
     try {
         item = JSON.parse(event.body)['Item'];
@@ -52,7 +52,7 @@ export const handler = async (event) => {
             }
         };
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return error_response;
     }
   };
