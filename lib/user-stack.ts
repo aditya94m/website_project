@@ -9,8 +9,8 @@ export class UserStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
     
-        const userTable = new dynamodb.Table(this, 'Users', {
-            partitionKey: {name: 'UserID', type:dynamodb.AttributeType.NUMBER}
+        const usersTable = new dynamodb.Table(this, 'Users', {
+            partitionKey: {name: 'UserID', type: dynamodb.AttributeType.NUMBER}
         });
 
         const postUserLambda = new lambda.Function(this, 'PostUser',  {
@@ -19,7 +19,7 @@ export class UserStack extends Stack {
             handler: 'post-user.handler',
             timeout: cdk.Duration.seconds(30),
             environment: {
-              DYNAMO_TABLE_NAME: userTable.tableName,
+              DYNAMO_TABLE_NAME: usersTable.tableName,
             },
           });
 
@@ -29,7 +29,7 @@ export class UserStack extends Stack {
             handler: 'get-user.handler',
             timeout: cdk.Duration.seconds(30),
             environment: {
-              DYNAMO_TABLE_NAME: userTable.tableName,
+              DYNAMO_TABLE_NAME: usersTable.tableName,
             },
         });
 
@@ -39,7 +39,7 @@ export class UserStack extends Stack {
             handler: 'put-user.handler',
             timeout: cdk.Duration.seconds(30),
             environment: {
-              DYNAMO_TABLE_NAME: userTable.tableName,
+              DYNAMO_TABLE_NAME: usersTable.tableName,
             },
         });
 
@@ -49,7 +49,7 @@ export class UserStack extends Stack {
             handler: 'delete-user.handler',
             timeout: cdk.Duration.seconds(30),
             environment: {
-              DYNAMO_TABLE_NAME: userTable.tableName,
+              DYNAMO_TABLE_NAME: usersTable.tableName,
             },
         });
 
@@ -59,20 +59,19 @@ export class UserStack extends Stack {
             handler: 'get-top-category-recommendations.handler',
             timeout: cdk.Duration.seconds(30),
             environment: {
-              DYNAMO_TABLE_NAME: userTable.tableName,
+              DYNAMO_TABLE_NAME: usersTable.tableName,
             },
         });
 
-
-        userTable.grantReadData(getUserLambda);
-        userTable.grantWriteData(postUserLambda);
-        userTable.grantWriteData(putUserLambda);
-        userTable.grantWriteData(deleteUserLambda);
+        usersTable.grantReadData(getUserLambda);
+        usersTable.grantWriteData(postUserLambda);
+        usersTable.grantWriteData(putUserLambda);
+        usersTable.grantWriteData(deleteUserLambda);
 
         const api = new apigw.RestApi(this, 'users-api');
-        const api_users = api.root.addResource('users')
+        const api_users = api.root.addResource('users');
         api_users.addMethod('POST', new apigw.LambdaIntegration(postUserLambda));
-        const api_userid = api_users.addResource('{userID}')
+        const api_userid = api_users.addResource('{userID}');
         api_userid.addMethod('GET', new apigw.LambdaIntegration(getUserLambda));
         api_userid.addMethod('PUT', new apigw.LambdaIntegration(putUserLambda));
         api_userid.addMethod('DELETE', new apigw.LambdaIntegration(deleteUserLambda));
