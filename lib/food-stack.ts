@@ -193,7 +193,7 @@ export class FoodStack extends Stack {
         reviewsTable.grantWriteData(deleteReviewLambda);
         categoriesTable.grantReadData(getCategoriesLambda);
 
-        const api = new apigw.RestApi(this, 'orders-api');
+        const api = new apigw.RestApi(this, 'foods-api');
         const api_foods = api.root.addResource('foods');
         api_foods.addMethod('GET', new apigw.LambdaIntegration(getFoodsLambda));
         const api_food_id = api_foods.addResource('{foodID}');
