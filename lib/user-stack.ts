@@ -21,7 +21,7 @@ export class UserStack extends Stack {
             environment: {
               DYNAMO_TABLE_NAME: usersTable.tableName,
             },
-          });
+        });
 
         const getUserLambda = new lambda.Function(this, 'GetUser', {
             runtime: lambda.Runtime.NODEJS_16_X,

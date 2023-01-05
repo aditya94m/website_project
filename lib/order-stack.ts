@@ -27,7 +27,7 @@ export class OrderStack extends Stack {
             environment: {
               DYNAMO_TABLE_NAME: ordersTable.tableName,
             },
-          });
+        });
 
         const postOrderLambda = new lambda.Function(this, 'PostOrder', {
             runtime: lambda.Runtime.NODEJS_16_X,
