@@ -1,6 +1,9 @@
 *.js
 !jest.config.js
 !/src/*.js
+!/src/food/*.js
+!/src/user/*.js
+!/src/order/*.js
 *.d.ts
 node_modules
 
