@@ -1,9 +1,10 @@
-# Welcome to your CDK TypeScript project
+# Restaurant Website Application
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`CdkServerlessAppStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+This is the code for a restaurant website I designed and am currently implementing that allows user to select foods from a menuplace orders, rate and review the foods, and review user order and account activity. The backend infrastructure is hosted on AWS using API Gateway, Lambda, DynamoDB, S3, SQS and is implemented as IaC with the AWS CDK in Typescript and the backend Lambdas are being implemented in Node.js The website uses REST API endpoints for the frontend to communicate with backend microservices. The front end will be implemented using React to display the UI for all functionality. 
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+The backend architecture design can be found below. [AWS_Proj_Idea.docx](https://github.com/aditya94m/website_project/files/10427861/AWS_Proj_Idea.docx)
+
+
 
 ## Useful commands
 
